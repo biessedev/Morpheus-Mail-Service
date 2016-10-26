@@ -1,0 +1,15 @@
+D:\project\Morpheus_Console\Morpheus_Console\bin\Debug\Morpheus_Console.exe.config
+D:\project\Morpheus_Console\Morpheus_Console\bin\Debug\Morpheus_Console.exe
+D:\project\Morpheus_Console\Morpheus_Console\bin\Debug\Morpheus_Console.pdb
+D:\project\Morpheus_Console\Morpheus_Console\bin\Debug\Morpheus_Console.xml
+D:\project\Morpheus_Console\Morpheus_Console\bin\Debug\mysql.data.dll
+D:\project\Morpheus_Console\Morpheus_Console\obj\Debug\Morpheus-Mail_Service.vbprojResolveAssemblyReference.cache
+D:\project\Morpheus_Console\Morpheus_Console\obj\Debug\Morpheus_Console.Resources.resources
+D:\project\Morpheus_Console\Morpheus_Console\obj\Debug\Morpheus-Mail_Service.vbproj.GenerateResource.Cache
+D:\project\Morpheus_Console\Morpheus_Console\obj\Debug\Morpheus_Console.exe
+D:\project\Morpheus_Console\Morpheus_Console\obj\Debug\Morpheus_Console.xml
+D:\project\Morpheus_Console\Morpheus_Console\obj\Debug\Morpheus_Console.pdb
+D:\project\Morpheus_Console\Morpheus-Mail_Service\bin\Debug\Morpheus_Console.exe.config
+D:\project\Morpheus_Console\Morpheus-Mail_Service\obj\Debug\Morpheus_Console.exe
+D:\project\Morpheus_Console\Morpheus-Mail_Service\obj\Debug\Morpheus_Console.xml
+D:\project\Morpheus_Console\Morpheus-Mail_Service\obj\Debug\Morpheus_Console.pdb

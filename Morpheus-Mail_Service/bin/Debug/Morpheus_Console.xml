@@ -1,0 +1,76 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+Morpheus_Console
+</name>
+</assembly>
+<members>
+<member name="T:Morpheus_Console.My.Resources.Resources">
+<summary>
+  A strongly-typed resource class, for looking up localized strings, etc.
+</summary>
+</member>
+<member name="P:Morpheus_Console.My.Resources.Resources.ResourceManager">
+<summary>
+  Returns the cached ResourceManager instance used by this class.
+</summary>
+</member>
+<member name="P:Morpheus_Console.My.Resources.Resources.Culture">
+<summary>
+  Overrides the current thread's CurrentUICulture property for all
+  resource lookups using this strongly typed resource class.
+</summary>
+</member>
+<member name="F:Morpheus_Console.ftp._Host">
+ <summary>
+ Host FTP
+ </summary>
+</member>
+<member name="F:Morpheus_Console.ftp._UserName">
+ <summary>
+ Username
+ </summary>
+</member>
+<member name="F:Morpheus_Console.ftp._Password">
+ <summary>
+ Password
+ </summary>
+</member>
+<member name="F:Morpheus_Console.ftp._FtpRequest">
+ <summary>
+ Richiesta FTP
+ </summary>
+</member>
+<member name="F:Morpheus_Console.ftp._FtpResponse">
+ <summary>
+ Risposta ftp
+ </summary>
+</member>
+<member name="F:Morpheus_Console.ftp._UseSSL">
+ <summary>
+ Flag SSL
+ </summary>
+</member>
+<member name="P:Morpheus_Console.ftp.Host">
+ <summary>
+ FTP Host URI
+ </summary>
+</member>
+<member name="P:Morpheus_Console.ftp.UserName">
+ <summary>
+ FTP User Name
+ </summary>
+</member>
+<member name="P:Morpheus_Console.ftp.Password">
+ <summary>
+ FTP Password
+ </summary>
+</member>
+<member name="P:Morpheus_Console.ftp.UseSSL">
+ <summary>
+ Flag utilizzo SSL
+ </summary>
+</member>
+</members>
+</doc>
