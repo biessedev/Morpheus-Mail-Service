@@ -9,6 +9,8 @@ Public Class TimerECR
 
     Public host As String
     Public database As String
+    Public userName As String
+    Public password As String
     Dim AdapterDoc As New MySqlDataAdapter("SELECT * FROM doc", MySqlconnection)
     Dim AdapterDocType As New MySqlDataAdapter("SELECT * FROM Doctype", MySqlconnection)
     Dim AdapterEcr As New MySqlDataAdapter("SELECT * FROM Ecr", MySqlconnection)
@@ -21,11 +23,13 @@ Public Class TimerECR
     Dim dep As New List(Of String)
     Dim RichTextBoxConv As New RichTextBox()
     Dim w As IO.StreamWriter
-    Sub New(host As String, database As String)
+    Sub New(host As String, database As String, userName As String, password As String)
         Me.host = host
         Me.database = database
+        Me.userName = userName
+        Me.password = password
         DBName = database
-        OpenConnectionMySql(host, database, "root", "bitron")
+        OpenConnectionMySql(host, database, userName, password)
         strFtpServerUser = ParameterTable("MorpheusFtpUser")
         strFtpServerPsw = ParameterTable("MorpheusFtpPsw")
         strFtpServerAdd = ParameterTable("PathDocument") & DBName & "/"
@@ -76,7 +80,7 @@ Public Class TimerECR
         ParameterTableWrite("SYSTEM_SCHEDULE", "RUN")
 
         If Now.DayOfWeek <> DayOfWeek.Saturday And Now.DayOfWeek <> DayOfWeek.Sunday Then
-            OpenConnectionMySql(host, database, "root", "bitron")
+            OpenConnectionMySql(host, database, userName, password)
             UpdateEcrTable()
             EcrMailScheduler()
             ecrDocConfirm()
@@ -85,19 +89,19 @@ Public Class TimerECR
         End If
 
         If Now.DayOfWeek <> DayOfWeek.Saturday And Now.DayOfWeek <> DayOfWeek.Sunday Then
-            OpenConnectionMySql(host, database, "root", "bitron")
+            OpenConnectionMySql(host, database, userName, password)
             TCRMailScheduler()
         End If
 
         ' DOC
         If Now.DayOfWeek <> DayOfWeek.Saturday And Now.DayOfWeek <> DayOfWeek.Sunday Then
-            OpenConnectionMySql(host, database, "root", "bitron")
+            OpenConnectionMySql(host, database, userName, password)
             DocMailScheduler()
         End If
 
         ' Status
         If Now.DayOfWeek <> DayOfWeek.Saturday And Now.DayOfWeek <> DayOfWeek.Sunday Then
-            OpenConnectionMySql(host, database, "root", "bitron")
+            OpenConnectionMySql(host, database, userName, password)
             StatusMailScheduler()
         End If
 
