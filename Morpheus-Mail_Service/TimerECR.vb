@@ -436,17 +436,29 @@ Public Class TimerECR
 
         Try
             If DayOfWeek.Saturday <> dt.DayOfWeek And DayOfWeek.Sunday <> dt.DayOfWeek And (dt.Hour > 8 And dt.Hour < 20) Then
-                'If (InStr(freqTo, "[" & Necr & "]", CompareMethod.Text) <= 0) And Necr <> "DAILY" Or ((dt.Hour = 9) And (dt.Minute() >= 0 And dt.Minute() < 59)) Then
-                'If (InStr(freqTo, "[" & Necr & "]", CompareMethod.Text) <= 0) And Necr <> "DAILY" And (dt.Hour > 8 And dt.Hour < 20) Then
+                'Dim rowEcr As DataRow() = tblEcr.Select("number = '" & Necr & "'")
+                'Dim parsedDate
+                'Dim dateList As New List(Of DateTime)
+                'dateList.Add(If(DateTime.TryParse(rowEcr(0).Item("date"), parsedDate), parsedDate, Date.Parse("1/1/2012 12:00:00 AM")))
+                'dateList.Add(If(DateTime.TryParse(rowEcr(0).Item("dateR"), parsedDate), parsedDate, Date.Parse("1/1/2012 12:00:00 AM")))
+                'dateList.Add(If(DateTime.TryParse(rowEcr(0).Item("dateU"), parsedDate), parsedDate, Date.Parse("1/1/2012 12:00:00 AM")))
+                'dateList.Add(If(DateTime.TryParse(rowEcr(0).Item("dateL"), parsedDate), parsedDate, Date.Parse("1/1/2012 12:00:00 AM")))
+                'dateList.Add(If(DateTime.TryParse(rowEcr(0).Item("dateB"), parsedDate), parsedDate, Date.Parse("1/1/2012 12:00:00 AM")))
+                'dateList.Add(If(DateTime.TryParse(rowEcr(0).Item("dateE"), parsedDate), parsedDate, Date.Parse("1/1/2012 12:00:00 AM")))
+                'dateList.Add(If(DateTime.TryParse(rowEcr(0).Item("dateN"), parsedDate), parsedDate, Date.Parse("1/1/2012 12:00:00 AM")))
+                'dateList.Add(If(DateTime.TryParse(rowEcr(0).Item("dateQ"), parsedDate), parsedDate, Date.Parse("1/1/2012 12:00:00 AM")))
+                'dateList.Add(If(DateTime.TryParse(rowEcr(0).Item("dateP"), parsedDate), parsedDate, Date.Parse("1/1/2012 12:00:00 AM")))
+                'dateList.Sort()
+                'dateList.Reverse()
+
                 If (InStr(freqTo, "[" & Necr & "]", CompareMethod.Text) <= 0) Then
+                    'Or                   ((InStr(freqTo, "[" & Necr & "]", CompareMethod.Text) > 0) And (DateDiff(DateInterval.Day, dateList.ElementAt(0), DateTime.Now) >= 3)) Then
                     client.Send(msg)
                     MailSent = True
-
                     Console.WriteLine("E mail sent: " & SubText & "  " & Mid(msg.To.Item(0).ToString, 1, 45) & " ....")
-
                     mailSender = True
-
-
+                    Application.DoEvents()
+                    Application.DoEvents()
                     RowSearchMail = tblmail.Select("list = '" & AddlistTo & "'")
                     For Each row In RowSearchMail
                         WriteField("freq", row("freq").ToString & "[" & Necr & "]", row("id").ToString)
@@ -461,6 +473,7 @@ Public Class TimerECR
         Catch ex As Exception
             Console.WriteLine("Mail not sent...!!!")
         End Try
+        Application.DoEvents()
     End Function
 
     Sub WriteField(ByVal field As String, ByVal v As String, ByVal list As String)
@@ -652,8 +665,8 @@ Public Class TimerECR
 
         Dim sql As String
         Dim RowSearchDoc = From p In tblDoc.Rows
-                           Where (p("header") <> (ParameterTable("plant") & "R_PRO_ECR")) And ((p("notification") = "" And p("sign") = "") Or (p("notification") = "" And p("sign") = "SENT" And (DateTime.Now.Date - DateTime.ParseExact(p("editor").Substring(p("editor").IndexOf("[") + 1, p("editor").LastIndexOf("]") - p("editor").IndexOf("[") - 1), "d/M/yyyy", CultureInfo.CurrentCulture).Date).TotalDays > 2))
-                           Select p
+                            Where (p("header") <> (ParameterTable("plant") & "R_PRO_ECR")) And ((p("notification") = "" And p("sign") = "") Or (p("notification") = "SENT" And p("sign") = "" And (DateTime.Now.Date - DateTime.ParseExact(p("editor").Substring(p("editor").IndexOf("[") + 1, p("editor").LastIndexOf("]") - p("editor").IndexOf("[") - 1), "d/M/yyyy", CultureInfo.CurrentCulture).Date).TotalDays > 2))
+                            Select p
         'RowSearchDoc = tblDoc.Select("notification = '' and sign = '' and HEADER <>'" & ParameterTable("plant") & "R_PRO_ECR'")
         For Each row In RowSearchDoc
             listFile = listFile & " " & vbCrLf & row("header").ToString & "_" & row("FileName").ToString & "_" & row("rev").ToString & "." & row("Extension").ToString & " " & vbCrLf
