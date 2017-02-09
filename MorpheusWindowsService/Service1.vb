@@ -3,7 +3,7 @@ Imports Morpheus_Console
 
 Public Class Service1
 
-    Protected Overrides Sub OnStart(ByVal args() As String)
+     Protected Overrides Sub OnStart(ByVal args() As String)
         'System.Diagnostics.Debugger.Launch()
         Module1.Main()
         ' Add code here to start your service. This method should set things

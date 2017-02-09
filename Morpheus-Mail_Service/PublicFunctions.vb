@@ -47,7 +47,7 @@ Module PublicFunctions
             cmd.ExecuteNonQuery()
             ParameterTableWrite = "OK"
         Catch ex As Exception
-            MsgBox("Parametric Write error!   " & ex.Message)
+            'MsgBox("Parametric Write error!   " & ex.Message)
         End Try
 
     End Function
@@ -67,7 +67,7 @@ Module PublicFunctions
             Adapter.Dispose()
             Ds.Dispose()
         Catch ex As Exception
-            MsgBox("Error: " & ex.Message)
+            'MsgBox("Error: " & ex.Message)
         End Try
 
     End Function

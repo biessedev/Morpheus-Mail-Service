@@ -368,8 +368,8 @@ Public Class TimerECR
     End Sub
 
     Function readDocSign(ByVal docId As Long, ByVal refresh As Boolean) As String
-        Static Dim tblDoc As DataTable
-        Static Dim DsDoc As New DataSet
+        Dim tblDoc As DataTable
+        Dim DsDoc As New DataSet
 
         If refresh = True Then
             AdapterDoc.SelectCommand = New MySqlCommand("SELECT * FROM DOC", MySqlconnection)
@@ -381,7 +381,7 @@ Public Class TimerECR
         If Res.Length > 0 Then
             readDocSign = Res(0).Item("sign").ToString
         Else
-            MsgBox("ECR document not found: " & docId)
+            'MsgBox("ECR document not found: " & docId)
         End If
 
     End Function
@@ -506,7 +506,7 @@ Public Class TimerECR
                         cmd = New MySqlCommand(sql, MySqlconnection)
                         cmd.ExecuteNonQuery()
                     Else
-                        MsgBox("Failed email sending for ECR confirmation!")
+                        'MsgBox("Failed email sending for ECR confirmation!")
                     End If
 
                     'sql = "UPDATE `" & DBName & "`.`ECR` SET `confirm` = 'SENT_CONFIRMED' WHERE `ECR`.`id` = " & row("id").ToString & " ;"
@@ -577,7 +577,7 @@ Public Class TimerECR
                         cmd = New MySqlCommand(sql, MySqlconnection)
                         cmd.ExecuteNonQuery()
                     Else
-                        MsgBox("Error sending email ECR approval!")
+                        'MsgBox("Error sending email ECR approval!")
                     End If
 
                 Catch ex As Exception
@@ -617,7 +617,7 @@ Public Class TimerECR
                         cmd = New MySqlCommand(sql, MySqlconnection)
                         cmd.ExecuteNonQuery()
                     Else
-                        MsgBox("Failed email sending for ECR signature!")
+                        'MsgBox("Failed email sending for ECR signature!")
                     End If
 
                 Catch ex As Exception
@@ -645,7 +645,7 @@ Public Class TimerECR
                     cmd = New MySqlCommand(sql, MySqlconnection)
                     cmd.ExecuteNonQuery()
                 Else
-                    MsgBox("Error sending email for TCR!")
+                    'MsgBox("Error sending email for TCR!")
                 End If
 
             Catch ex As Exception
@@ -722,7 +722,7 @@ Public Class TimerECR
                         cmd = New MySqlCommand(sql, MySqlconnection)
                         cmd.ExecuteNonQuery()
                     Else
-                        MsgBox("mail sent error ECR confirm!")
+                        'MsgBox("mail sent error ECR confirm!")
                     End If
 
                 Catch ex As Exception
