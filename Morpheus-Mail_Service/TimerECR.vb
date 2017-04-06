@@ -371,11 +371,9 @@ Public Class TimerECR
         Dim tblDoc As DataTable
         Dim DsDoc As New DataSet
 
-        If refresh = True Then
-            AdapterDoc.SelectCommand = New MySqlCommand("SELECT * FROM DOC", MySqlconnection)
-            AdapterDoc.Fill(DsDoc, "doc")
-            tblDoc = DsDoc.Tables("doc")
-        End If
+        AdapterDoc.SelectCommand = New MySqlCommand("SELECT * FROM DOC", MySqlconnection)
+        AdapterDoc.Fill(DsDoc, "doc")
+        tblDoc = DsDoc.Tables("doc")
 
         Dim Res As DataRow() = tblDoc.Select("id = " & docId)
         If Res.Length > 0 Then
@@ -665,8 +663,8 @@ Public Class TimerECR
 
         Dim sql As String
         Dim RowSearchDoc = From p In tblDoc.Rows
-                            Where (p("header") <> (ParameterTable("plant") & "R_PRO_ECR")) And ((p("notification") = "" And p("sign") = "") Or (p("notification") = "SENT" And p("sign") = "" And (DateTime.Now.Date - DateTime.ParseExact(p("editor").Substring(p("editor").IndexOf("[") + 1, p("editor").LastIndexOf("]") - p("editor").IndexOf("[") - 1), "d/M/yyyy", CultureInfo.CurrentCulture).Date).TotalDays > 2))
-                            Select p
+                           Where (p("header") <> (ParameterTable("plant") & "R_PRO_ECR")) And ((p("notification") = "" And p("sign") = "") Or (p("notification") = "SENT" And p("sign") = "" And (DateTime.Now.Date - DateTime.ParseExact(p("editor").Substring(p("editor").IndexOf("[") + 1, p("editor").LastIndexOf("]") - p("editor").IndexOf("[") - 1), "d/M/yyyy", CultureInfo.CurrentCulture).Date).TotalDays > 2))
+                           Select p
         'RowSearchDoc = tblDoc.Select("notification = '' and sign = '' and HEADER <>'" & ParameterTable("plant") & "R_PRO_ECR'")
         For Each row In RowSearchDoc
             listFile = listFile & " " & vbCrLf & row("header").ToString & "_" & row("FileName").ToString & "_" & row("rev").ToString & "." & row("Extension").ToString & " " & vbCrLf

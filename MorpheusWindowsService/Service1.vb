@@ -13,6 +13,8 @@ Public Class Service1
 
     Protected Overrides Sub OnStop()
         ' Add code here to perform any tear-down necessary to stop your service.
+        Module1.Stp()
+
     End Sub
 
 End Class

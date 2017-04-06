@@ -2,10 +2,11 @@
 Imports System.Threading
 
 Public Module Module1
+    Dim thread As New Thread(AddressOf Start)
 
     Sub Main()
-        Dim thread As New Thread(AddressOf Start)
-        thread.Start()
+
+        Thread.Start()
 
     End Sub
 
@@ -19,4 +20,11 @@ Public Module Module1
         'Dim timer As New TimerECR("127.0.0.1", "srvdoc")
         'timer.TimerECR_Tick()
     End Sub
+
+    Sub Stp()
+        thread.Abort()
+
+
+    End Sub
+
 End Module
