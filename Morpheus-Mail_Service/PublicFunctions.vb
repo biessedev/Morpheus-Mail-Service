@@ -4,7 +4,6 @@ Imports System.Data.SqlClient
 Imports System.Globalization
 
 Module PublicFunctions
-    Public MySqlconnection As MySqlConnection
     Public MySQLConnectionString As String
     Public DBName As String
     Public ConnectionString As String
@@ -17,18 +16,16 @@ Module PublicFunctions
 
 
 
-    Sub OpenConnectionMySql(ByVal strHost As String, ByVal strDatabase As String, ByVal strUserName As String, ByVal strPassword As String)
-
+    Public Function OpenConnectionMySql(ByVal strHost As String, ByVal strDatabase As String, ByVal strUserName As String, ByVal strPassword As String)
+        Dim conn = "host=" & strHost & ";" & "username=" & strUserName & ";" & "password=" & strPassword & ";" & "database=" & strDatabase & ";Connect Timeout=120;allow zero datetime=true;charset=utf8; "
         Try
-            ConnectionString = "host=" & strHost & ";" & "username=" & strUserName & ";" & "password=" & strPassword & ";" & "database=" & strDatabase & ";Connect Timeout=120;allow zero datetime=true;charset=utf8; "
-            MySqlconnection = New MySqlConnection(ConnectionString)
-            If MySqlconnection.State = ConnectionState.Open Then
-                MySqlconnection.Close()
-            End If
-            MySqlconnection.Open()
+            Dim mysqlconn = New MySqlConnection(conn)
+            mysqlconn.Open()
+            Return mysqlconn
         Catch ae As MySqlException
+            Return New MySqlConnection()
         End Try
-    End Sub
+    End Function
 
     Sub CloseConnectionMySql()
         Try

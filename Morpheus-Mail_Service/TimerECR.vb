@@ -29,7 +29,7 @@ Public Class TimerECR
         Me.userName = userName
         Me.password = password
         DBName = database
-        OpenConnectionMySql(host, database, userName, password)
+        MySqlconnection = OpenConnectionMySql(host, database, userName, password)
         strFtpServerUser = ParameterTable("MorpheusFtpUser")
         strFtpServerPsw = ParameterTable("MorpheusFtpPsw")
         strFtpServerAdd = ParameterTable("PathDocument") & DBName & "/"

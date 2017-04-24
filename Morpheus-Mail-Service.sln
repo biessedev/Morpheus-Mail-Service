@@ -9,6 +9,8 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Morpheus-Mail_Service", "Mo
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "MorpheusSetupService", "MorpheusSetupService\MorpheusSetupService.wixproj", "{E0F36776-B8D7-4EEB-8097-114353E6829F}"
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Morpheus-Mail-Service(Test)", "Morpheus-Mail-Service(Test)\Morpheus-Mail-Service(Test).vbproj", "{15FD55D9-BA0C-4CE5-8EEC-3BAD254C6738}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CD_ROM|Any CPU = CD_ROM|Any CPU
@@ -81,6 +83,26 @@ Global
 		{E0F36776-B8D7-4EEB-8097-114353E6829F}.SingleImage|Any CPU.Build.0 = Release|x86
 		{E0F36776-B8D7-4EEB-8097-114353E6829F}.SingleImage|x86.ActiveCfg = Release|x86
 		{E0F36776-B8D7-4EEB-8097-114353E6829F}.SingleImage|x86.Build.0 = Release|x86
+		{15FD55D9-BA0C-4CE5-8EEC-3BAD254C6738}.CD_ROM|Any CPU.ActiveCfg = Release|Any CPU
+		{15FD55D9-BA0C-4CE5-8EEC-3BAD254C6738}.CD_ROM|Any CPU.Build.0 = Release|Any CPU
+		{15FD55D9-BA0C-4CE5-8EEC-3BAD254C6738}.CD_ROM|x86.ActiveCfg = Release|Any CPU
+		{15FD55D9-BA0C-4CE5-8EEC-3BAD254C6738}.CD_ROM|x86.Build.0 = Release|Any CPU
+		{15FD55D9-BA0C-4CE5-8EEC-3BAD254C6738}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15FD55D9-BA0C-4CE5-8EEC-3BAD254C6738}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15FD55D9-BA0C-4CE5-8EEC-3BAD254C6738}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{15FD55D9-BA0C-4CE5-8EEC-3BAD254C6738}.Debug|x86.Build.0 = Debug|Any CPU
+		{15FD55D9-BA0C-4CE5-8EEC-3BAD254C6738}.DVD-5|Any CPU.ActiveCfg = Debug|Any CPU
+		{15FD55D9-BA0C-4CE5-8EEC-3BAD254C6738}.DVD-5|Any CPU.Build.0 = Debug|Any CPU
+		{15FD55D9-BA0C-4CE5-8EEC-3BAD254C6738}.DVD-5|x86.ActiveCfg = Debug|Any CPU
+		{15FD55D9-BA0C-4CE5-8EEC-3BAD254C6738}.DVD-5|x86.Build.0 = Debug|Any CPU
+		{15FD55D9-BA0C-4CE5-8EEC-3BAD254C6738}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15FD55D9-BA0C-4CE5-8EEC-3BAD254C6738}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15FD55D9-BA0C-4CE5-8EEC-3BAD254C6738}.Release|x86.ActiveCfg = Release|Any CPU
+		{15FD55D9-BA0C-4CE5-8EEC-3BAD254C6738}.Release|x86.Build.0 = Release|Any CPU
+		{15FD55D9-BA0C-4CE5-8EEC-3BAD254C6738}.SingleImage|Any CPU.ActiveCfg = Release|Any CPU
+		{15FD55D9-BA0C-4CE5-8EEC-3BAD254C6738}.SingleImage|Any CPU.Build.0 = Release|Any CPU
+		{15FD55D9-BA0C-4CE5-8EEC-3BAD254C6738}.SingleImage|x86.ActiveCfg = Release|Any CPU
+		{15FD55D9-BA0C-4CE5-8EEC-3BAD254C6738}.SingleImage|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
