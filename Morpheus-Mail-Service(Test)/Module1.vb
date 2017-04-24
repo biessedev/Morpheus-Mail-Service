@@ -1,7 +1,4 @@
-﻿Imports System.Configuration
-Imports Morpheus_Mail_Service_Test_
-
-Module Module1
+﻿Module Module1
 
     Sub Main()
         Morpheus_Console.Start()
