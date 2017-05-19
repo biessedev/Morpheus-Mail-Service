@@ -14,8 +14,6 @@ Module PublicFunctions
     Public DsError As New DataSet
     Public CultureInfo_ja_JP As New CultureInfo("ja-JP", False)
 
-
-
     Public Function OpenConnectionMySql(ByVal strHost As String, ByVal strDatabase As String, ByVal strUserName As String, ByVal strPassword As String)
         Dim conn = "host=" & strHost & ";" & "username=" & strUserName & ";" & "password=" & strPassword & ";" & "database=" & strDatabase & ";Connect Timeout=120;allow zero datetime=true;charset=utf8; "
         Try
@@ -46,7 +44,6 @@ Module PublicFunctions
         Catch ex As Exception
             'MsgBox("Parametric Write error!   " & ex.Message)
         End Try
-
     End Function
 
     'Write and get the time of server.
@@ -66,7 +63,6 @@ Module PublicFunctions
         Catch ex As Exception
             'MsgBox("Error: " & ex.Message)
         End Try
-
     End Function
 
     Function string_to_date(ByVal Indate As String) As Date
@@ -76,5 +72,4 @@ Module PublicFunctions
     Function date_to_string(ByVal Indate As Date) As String
         date_to_string = Indate.Year & "/" & Mid("0" & Indate.Month, Len(Trim(Str(Indate.Month))), 2) & "/" & Mid("0" & Indate.Day, Len(Trim(Str(Indate.Day))), 2)
     End Function
-
 End Module

@@ -23,6 +23,7 @@ Public Class TimerECR
     Dim dep As New List(Of String)
     Dim RichTextBoxConv As New RichTextBox()
     Dim w As IO.StreamWriter
+
     Sub New(host As String, database As String, userName As String, password As String)
         Me.host = host
         Me.database = database
@@ -33,31 +34,17 @@ Public Class TimerECR
         strFtpServerUser = ParameterTable("MorpheusFtpUser")
         strFtpServerPsw = ParameterTable("MorpheusFtpPsw")
         strFtpServerAdd = ParameterTable("PathDocument") & DBName & "/"
-        dep.Add("P")
         dep.Add("U")
-        dep.Add("E")
-        dep.Add("Q")
-        dep.Add("N")
         dep.Add("L")
         dep.Add("C")
-        dep.Add("F")
         dep.Add("B")
-
-        modifyRichTextBox()
+        dep.Add("E")
+        dep.Add("N")
+        dep.Add("P")
+        dep.Add("Q")
+        dep.Add("F")
+        dep.Add("S")
     End Sub
-
-    Private Sub modifyRichTextBox()
-        Me.RichTextBoxConv.Anchor = AnchorStyles.None
-        Me.RichTextBoxConv.Font = New Drawing.Font("Microsoft Sans Serif", 10.0!, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.RichTextBoxConv.ImeMode = ImeMode.[On]
-        Me.RichTextBoxConv.Location = New Drawing.Point(380, 183)
-        Me.RichTextBoxConv.Name = "RichTextBoxConv"
-        Me.RichTextBoxConv.Size = New Drawing.Size(33, 21)
-        Me.RichTextBoxConv.TabIndex = 172
-        Me.RichTextBoxConv.Text = ""
-        Me.RichTextBoxConv.Visible = False
-    End Sub
-
 
     Public Sub TimerECR_Tick()
 
@@ -147,10 +134,9 @@ Public Class TimerECR
             If EcrN > 0 And RowEcr.Length = 0 And InStr(row("filename").ToString, "template", CompareMethod.Text) <= 0 Then
                 Try
                     filename = row("filename").ToString & "_" & row("rev").ToString & "." & row("extension").ToString
-                    'Dim data As String = Mid(row("editor").ToString, Len(row("editor").ToString) - 9, 9)
-                    sql = "INSERT INTO `" & DBName & "`.`ecr` (`nnote` ,`number` ,`description` ,`date`,`Usign`,`nsign`,`Lsign`,`Asign`,`Qsign`,`Esign`,`Rsign`,`Psign`,`Bsign`,`DocInvalid`,`IdDoc`) VALUES (" &
+                    sql = "INSERT INTO `" & DBName & "`.`ecr` (`nnote` ,`number` ,`description` ,`date`,`Usign`,`nsign`,`Lsign`,`Asign`,`Qsign`,`Esign`,`Rsign`,`Psign`,`Bsign`,`Ssign`,`DocInvalid`,`IdDoc`,`CLCV`) VALUES (" &
                     Replace("'{\rtf1\fbidis\ansi\ansicpg1252\deff0{\fonttbl{\f0\fnil\fcharset0 Microsoft Sans Serif;}{\f1\fswiss\fprq2\fcharset0 Calibri;}}{\colortbl ;\red23\green54\blue93;}\viewkind4\uc1\pard\ltrpar\sl360\slmult1\cf1\lang1040\f0\fs22\par\par\par\par\ul\b\i\f1 Confirmation AREA\par\lang1033\ulnone\b0\i0 Time and First serial number / Fiche:\par\par\par\parOther Annotation:\f0\par\pard\ltrpar\cf0\lang1040\fs24\par\par\par\par}', ", "\", "\\") _
-                    & EcrN & ", '" & filename & "', '" & "01/01/2000" & "', 'NOT CHECKED' , 'NOT CHECKED', 'NOT CHECKED', 'System[automatic]', 'NOT CHECKED', 'NOT CHECKED', 'NOT CHECKED', 'NOT CHECKED','NOT CHECKED', 'NO',  " & row("id").ToString & " );"
+                    & EcrN & ", '" & filename & "', '" & "01/01/2000" & "', 'NOT CHECKED' , 'NOT CHECKED', 'NOT CHECKED', 'System[automatic]', 'NOT CHECKED', 'NOT CHECKED', 'NOT CHECKED', 'NOT CHECKED', 'NOT CHECKED','NOT CHECKED', 'NO', " & row("id").ToString & ",'NO');"
                     cmd = New MySqlCommand(sql, MySqlconnection)
                     cmd.ExecuteNonQuery()
 
@@ -173,194 +159,53 @@ Public Class TimerECR
         End Using
     End Sub
 
-    Sub EcrMailScheduler()
+    Private Function getAllDepartmentInitialsForAutomaticSrvDocMessage() As String
+        Return "ARULBENPQS"
+    End Function
 
+    Sub EcrMailScheduler()
         Dim refresh = True
         Dim RowSearchEcr As DataRow() = tblEcr.Select("")
         For Each row In RowSearchEcr
-
             If readDocSign(row("iddoc").ToString, refresh) = "" Then
-
                 If row("ecrcheck").ToString <> "YES" Then
-                    mailSender("ECR_" & "VerifyTo", "ECR_" & "VerifyCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please VERIFY the Ecr: " & " " & row("description").ToString, "ECR Check Request " & " " & row("description").ToString, row("number").ToString)
+                    mailSender("ECR_" & "VerifyTo", "ECR_" & "VerifyCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please VERIFY the ECR: " & " " & row("description").ToString, "ECR Check Request " & " " & row("description").ToString, row("number").ToString)
                 End If
-
-                Dim us As Object = "R"
-                If ((row(us & "sign").ToString = "NOT CHECKED") And (row("ecrcheck").ToString = "YES")) Then
-                    mailSender("ECR_" & us & "_SignTo", "ECR_" & us & "_SignCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please CHECK the Ecr: " & " " & row("description").ToString, "ECR Check Request " & " " & row("description").ToString, row("number").ToString)
-                End If
-
-                us = "L"
-                If row(us & "sign").ToString = "NOT CHECKED" And
-                    row("ecrcheck").ToString = "YES" And
-                    row("Rsign").ToString <> "NOT CHECKED" Then
-                    mailSender("ECR_" & us & "_SignTo", "ECR_" & us & "_SignCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please CHECK the Ecr: " & " " & row("description").ToString, "ECR Check Request " & " " & row("description").ToString, row("number").ToString)
-                End If
-
-                us = "U"
-                If row(us & "sign").ToString = "NOT CHECKED" And
-                    row("ecrcheck").ToString = "YES" And
-                    row("Rsign").ToString <> "NOT CHECKED" And
-                    row("Lsign").ToString <> "NOT CHECKED" Then
-                    mailSender("ECR_" & us & "_SignTo", "ECR_" & us & "_SignCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please CHECK the Ecr: " & " " & row("description").ToString, "ECR Check Request " & " " & row("description").ToString, row("number").ToString)
-                End If
-
-                us = "B"
-                If row(us & "sign").ToString = "NOT CHECKED" And
-                    row("ecrcheck").ToString = "YES" And
-                    row("Rsign").ToString <> "NOT CHECKED" And
-                    row("Lsign").ToString <> "NOT CHECKED" And
-                    row("Usign").ToString <> "NOT CHECKED" Then
-                    mailSender("ECR_" & us & "_SignTo", "ECR_" & us & "_SignCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please CHECK the Ecr: " & " " & row("description").ToString, "ECR Check Request " & " " & row("description").ToString, row("number").ToString)
-                End If
-
-                us = "E"
-                If row(us & "sign").ToString = "NOT CHECKED" And
-                    row("ecrcheck").ToString = "YES" And
-                    row("Rsign").ToString <> "NOT CHECKED" And
-                    row("Lsign").ToString <> "NOT CHECKED" And
-                    row("Usign").ToString <> "NOT CHECKED" Then
-                    mailSender("ECR_" & us & "_SignTo", "ECR_" & us & "_SignCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please CHECK the Ecr: " & " " & row("description").ToString, "ECR Check Request " & " " & row("description").ToString, row("number").ToString)
-                End If
-
-                us = "N"
-                If row(us & "sign").ToString = "NOT CHECKED" And
-                    row("ecrcheck").ToString = "YES" And
-                    row("Rsign").ToString <> "NOT CHECKED" And
-                    row("Lsign").ToString <> "NOT CHECKED" And
-                    row("Usign").ToString <> "NOT CHECKED" And
-                    row("Bsign").ToString <> "NOT CHECKED" And
-                    row("Esign").ToString <> "NOT CHECKED" Then
-                    mailSender("ECR_" & us & "_SignTo", "ECR_" & us & "_SignCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please CHECK the Ecr: " & " " & row("description").ToString, "ECR Check Request " & " " & row("description").ToString, row("number").ToString)
-                End If
-
-                us = "P"
-                If row(us & "sign").ToString = "NOT CHECKED" And
-                    row("ecrcheck").ToString = "YES" And
-                    row("Rsign").ToString <> "NOT CHECKED" And
-                    row("Lsign").ToString <> "NOT CHECKED" And
-                    row("Usign").ToString <> "NOT CHECKED" And
-                    row("Bsign").ToString <> "NOT CHECKED" And
-                    row("Esign").ToString <> "NOT CHECKED" And
-                    row("Nsign").ToString <> "NOT CHECKED" Then
-                    mailSender("ECR_" & us & "_SignTo", "ECR_" & us & "_SignCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please CHECK the Ecr: " & " " & row("description").ToString, "ECR Check Request " & " " & row("description").ToString, row("number").ToString)
-                End If
-
-                us = "Q"
-                If row(us & "sign").ToString = "NOT CHECKED" And
-                    row("ecrcheck").ToString = "YES" And
-                    row("Rsign").ToString <> "NOT CHECKED" And
-                    row("Lsign").ToString <> "NOT CHECKED" And
-                    row("Usign").ToString <> "NOT CHECKED" And
-                    row("Bsign").ToString <> "NOT CHECKED" And
-                    row("Esign").ToString <> "NOT CHECKED" And
-                    row("Nsign").ToString <> "NOT CHECKED" Then
-                    mailSender("ECR_" & us & "_SignTo", "ECR_" & us & "_SignCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please CHECK the Ecr: " & " " & row("description").ToString, "ECR Check Request " & " " & row("description").ToString, row("number").ToString)
-                End If
-
-                us = "A"
-                If row(us & "sign").ToString = "NOT CHECKED" And
-                    row("ecrcheck").ToString = "YES" And
-                    row("Rsign").ToString <> "NOT CHECKED" And
-                    row("Lsign").ToString <> "NOT CHECKED" And
-                    row("Usign").ToString <> "NOT CHECKED" And
-                    row("Bsign").ToString <> "NOT CHECKED" And
-                    row("Esign").ToString <> "NOT CHECKED" And
-                    row("Nsign").ToString <> "NOT CHECKED" And
-                    row("Psign").ToString <> "NOT CHECKED" And
-                    row("Qsign").ToString <> "NOT CHECKED" Then
-                    mailSender("ECR_" & us & "_SignTo", "ECR_" & us & "_SignCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please CHECK the Ecr: " & " " & row("description").ToString, "ECR Check Request " & " " & row("description").ToString, row("number").ToString)
-                End If
-
+                Dim us As String = getAllDepartmentInitialsForAutomaticSrvDocMessage()
+                For Each c As String In us
+                    If ((row(c & "sign").ToString = "NOT CHECKED") And (row("ecrcheck").ToString = "YES")) Then
+                        mailSender("ECR_" & c & "_SignTo", "ECR_" & c & "_SignCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please CHECK the ECR: " & " " & row("description").ToString, "ECR Check Request " & " " & row("description").ToString, row("number").ToString)
+                    End If
+                Next
                 Dim dt As Date = string_to_date((row("date").ToString))
 
                 If row("Rsign").ToString <> "NOT CHECKED" And
-                row("Lsign").ToString <> "NOT CHECKED" And
                 row("Usign").ToString <> "NOT CHECKED" And
+                row("Lsign").ToString <> "NOT CHECKED" And
                 row("Bsign").ToString <> "NOT CHECKED" And
                 row("Esign").ToString <> "NOT CHECKED" And
                 row("Nsign").ToString <> "NOT CHECKED" And
                 row("Psign").ToString <> "NOT CHECKED" And
                 row("Qsign").ToString <> "NOT CHECKED" And
+                row("Ssign").ToString <> "NOT CHECKED" And
                 DateDiff(DateInterval.Day, Now, dt) < 2 Then
 
-                    us = "A"
-                    If row(us & "sign").ToString = "CHECKED" Then
-                        mailSender("ECR_" & us & "_SignTo", "ECR_" & us & "_SignCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please APPROVE the Ecr: " & " " & row("description").ToString, "ECR Approval Request " & row("description").ToString, row("number").ToString & "A")
-                    End If
-                    us = "R"
-                    If row(us & "sign").ToString = "CHECKED" Then
-                        mailSender("ECR_" & us & "_SignTo", "ECR_" & us & "_SignCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please APPROVE the Ecr: " & " " & row("description").ToString, "ECR Approval Request " & row("description").ToString, row("number").ToString & "A")
-                    End If
-                    us = "L"
-                    If row(us & "sign").ToString = "CHECKED" Then
-                        mailSender("ECR_" & us & "_SignTo", "ECR_" & us & "_SignCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please APPROVE the Ecr: " & " " & row("description").ToString, "ECR Approval Request " & row("description").ToString, row("number").ToString & "A")
-                    End If
-                    us = "U"
-                    If row(us & "sign").ToString = "CHECKED" Then
-                        mailSender("ECR_" & us & "_SignTo", "ECR_" & us & "_SignCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please APPROVE the Ecr: " & " " & row("description").ToString, "ECR Approval Request " & row("description").ToString, row("number").ToString & "A")
-                    End If
-                    us = "B"
-                    If row(us & "sign").ToString = "CHECKED" Then
-                        mailSender("ECR_" & us & "_SignTo", "ECR_" & us & "_SignCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please APPROVE the Ecr: " & " " & row("description").ToString, "ECR Approval Request " & row("description").ToString, row("number").ToString & "A")
-                    End If
-                    us = "E"
-                    If row(us & "sign").ToString = "CHECKED" Then
-                        mailSender("ECR_" & us & "_SignTo", "ECR_" & us & "_SignCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please APPROVE the Ecr: " & " " & row("description").ToString, "ECR Approval Request " & row("description").ToString, row("number").ToString & "A")
-                    End If
-                    us = "N"
-                    If row(us & "sign").ToString = "CHECKED" Then
-                        mailSender("ECR_" & us & "_SignTo", "ECR_" & us & "_SignCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please APPROVE the Ecr: " & " " & row("description").ToString, "ECR Approval Request " & row("description").ToString, row("number").ToString & "A")
-                    End If
-                    us = "P"
-                    If row(us & "sign").ToString = "CHECKED" Then
-                        mailSender("ECR_" & us & "_SignTo", "ECR_" & us & "_SignCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please APPROVE the Ecr: " & " " & row("description").ToString, "ECR Approval Request " & row("description").ToString, row("number").ToString & "A")
-                    End If
-                    us = "Q"
-                    If row(us & "sign").ToString = "CHECKED" Then
-                        mailSender("ECR_" & us & "_SignTo", "ECR_" & us & "_SignCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please APPROVE the Ecr: " & " " & row("description").ToString, "ECR Approval Request " & row("description").ToString, row("number").ToString & "A")
-                    End If
+                    us = getAllDepartmentInitialsForAutomaticSrvDocMessage()
+                    For Each c As String In us
+                        If row(c & "sign").ToString = "CHECKED" Then
+                            mailSender("ECR_" & c & "_SignTo", "ECR_" & c & "_SignCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please APPROVE the Ecr: " & " " & row("description").ToString, "ECR Approval Request " & row("description").ToString, row("number").ToString & "A")
+                        End If
+                    Next
                 End If
-
-                If InStr(row("Rsign").ToString & row("Lsign").ToString & row("Usign").ToString & row("Bsign").ToString & row("Esign").ToString & row("Nsign").ToString & row("Psign").ToString & row("Qsign").ToString & row("Asign").ToString, "CHECKED", CompareMethod.Text) <= 0 And
+                   If InStr(row("Rsign").ToString & row("Usign").ToString & row("Lsign").ToString & row("Bsign").ToString & row("Esign").ToString & row("Nsign").ToString & row("Psign").ToString & row("Qsign").ToString & row("Asign").ToString & row("Ssign").ToString, "CHECKED", CompareMethod.Text) <= 0 And
                     DateDiff(DateInterval.Day, Now, dt) < 2 Then
 
-                    us = "A"
-                    If row(us & "sign").ToString = "APPROVED" Then
-                        mailSender("ECR_" & us & "_SignTo", "ECR_" & us & "_SignCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please SIGN the Ecr: " & " " & row("description").ToString, "ECR Sign Request " & row("description").ToString, row("number").ToString & "S")
-                    End If
-                    us = "R"
-                    If row(us & "sign").ToString = "APPROVED" Then
-                        mailSender("ECR_" & us & "_SignTo", "ECR_" & us & "_SignCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please SIGN the Ecr: " & " " & row("description").ToString, "ECR Sign Request " & row("description").ToString, row("number").ToString & "S")
-                    End If
-                    us = "L"
-                    If row(us & "sign").ToString = "APPROVED" Then
-                        mailSender("ECR_" & us & "_SignTo", "ECR_" & us & "_SignCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please SIGN the Ecr: " & " " & row("description").ToString, "ECR Sign Request " & row("description").ToString, row("number").ToString & "S")
-                    End If
-                    us = "U"
-                    If row(us & "sign").ToString = "APPROVED" Then
-                        mailSender("ECR_" & us & "_SignTo", "ECR_" & us & "_SignCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please SIGN the Ecr: " & " " & row("description").ToString, "ECR Sign Request " & row("description").ToString, row("number").ToString & "S")
-                    End If
-                    us = "B"
-                    If row(us & "sign").ToString = "APPROVED" Then
-                        mailSender("ECR_" & us & "_SignTo", "ECR_" & us & "_SignCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please SIGN the Ecr: " & " " & row("description").ToString, "ECR Sign Request " & row("description").ToString, row("number").ToString & "S")
-                    End If
-                    us = "E"
-                    If row(us & "sign").ToString = "APPROVED" Then
-                        mailSender("ECR_" & us & "_SignTo", "ECR_" & us & "_SignCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please SIGN the Ecr: " & " " & row("description").ToString, "ECR Sign Request " & row("description").ToString, row("number").ToString & "S")
-                    End If
-                    us = "N"
-                    If row(us & "sign").ToString = "APPROVED" Then
-                        mailSender("ECR_" & us & "_SignTo", "ECR_" & us & "_SignCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please SIGN the Ecr: " & " " & row("description").ToString, "ECR Sign Request " & row("description").ToString, row("number").ToString & "S")
-                    End If
-                    us = "P"
-                    If row(us & "sign").ToString = "APPROVED" Then
-                        mailSender("ECR_" & us & "_SignTo", "ECR_" & us & "_SignCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please SIGN the Ecr: " & " " & row("description").ToString, "ECR Sign Request " & row("description").ToString, row("number").ToString & "S")
-                    End If
-                    us = "Q"
-                    If row(us & "sign").ToString = "APPROVED" Then
-                        mailSender("ECR_" & us & "_SignTo", "ECR_" & us & "_SignCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please SIGN the Ecr: " & " " & row("description").ToString, "ECR Sign Request " & row("description").ToString, row("number").ToString & "S")
-                    End If
+                    us = getAllDepartmentInitialsForAutomaticSrvDocMessage()
+                    For Each c As String In us
+                        If row(c & "sign").ToString = "APPROVED" Then
+                            mailSender("ECR_" & c & "_SignTo", "ECR_" & c & "_SignCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf & "Please SIGN the Ecr: " & " " & row("description").ToString, "ECR Sign Request " & row("description").ToString, row("number").ToString & "S")
+                        End If
+                    Next
                 End If
             End If
             refresh = False
@@ -378,8 +223,6 @@ Public Class TimerECR
         Dim Res As DataRow() = tblDoc.Select("id = " & docId)
         If Res.Length > 0 Then
             readDocSign = Res(0).Item("sign").ToString
-        Else
-            'MsgBox("ECR document not found: " & docId)
         End If
 
     End Function
@@ -485,13 +328,11 @@ Public Class TimerECR
     End Sub
 
     Sub ecrDocConfirm()
-
         Dim sql As String, refresh = True
         Dim RowSearchEcr As DataRow() = tblEcr.Select("docInvalid = 'NO'", "number")
-
         For Each row In RowSearchEcr
-            If InStr(row("Rsign").ToString & row("Lsign").ToString & row("Usign").ToString & row("Bsign").ToString & row("Esign").ToString & row("Nsign").ToString & row("Psign").ToString & row("Qsign").ToString & row("Asign").ToString, "APPROVED", CompareMethod.Text) <= 0 And readDocSign(row("iddoc").ToString, refresh) <> "" And
-                row("confirm").ToString = "CONFIRMED" Then
+            If InStr(row("Rsign").ToString & row("Lsign").ToString & row("Usign").ToString & row("Bsign").ToString & row("Esign").ToString & row("Nsign").ToString & row("Psign").ToString & row("Qsign").ToString & row("Asign").ToString & row("Ssign").ToString, "APPROVED", CompareMethod.Text) <= 0 And readDocSign(row("iddoc").ToString, refresh) <> "" And
+                            row("confirm").ToString = "CONFIRMED" Then
 
                 Dim fileOpen As String = downloadFileWinPath(ParameterTable("plant") & "R_PRO_ECR_" & row("DESCRIPTION").ToString, ParameterTable("plant") & "R/" & ParameterTable("plant") & "R_PRO_ECR/")
                 Try
@@ -503,11 +344,7 @@ Public Class TimerECR
                         sql = "UPDATE `" & DBName & "`.`ECR` SET `confirm` = 'SENT_CONFIRMED' WHERE `ECR`.`id` = " & row("id").ToString & " ;"
                         cmd = New MySqlCommand(sql, MySqlconnection)
                         cmd.ExecuteNonQuery()
-                    Else
-                        'MsgBox("Failed email sending for ECR confirmation!")
                     End If
-
-                    'sql = "UPDATE `" & DBName & "`.`ECR` SET `confirm` = 'SENT_CONFIRMED' WHERE `ECR`.`id` = " & row("id").ToString & " ;"
                     cmd = New MySqlCommand(sql, MySqlconnection)
                     cmd.ExecuteNonQuery()
 
@@ -528,7 +365,6 @@ Public Class TimerECR
 
         If fileName <> "" Then
             Try
-
                 ComunicationLog(objFtp.DownloadFile(strPathFtp, IO.Path.GetTempPath, fileName)) ' download successfull
                 downloadFileWinPath = IO.Path.GetTempPath & fileName
             Catch ex As Exception
@@ -554,8 +390,7 @@ Public Class TimerECR
         For Each row In RowSearchEcr
             Dim i As Integer
             i = Int(row("number").ToString)
-
-            If InStr(row("Rsign").ToString & row("Lsign").ToString & row("Usign").ToString & row("Bsign").ToString & row("Esign").ToString & row("Nsign").ToString & row("Psign").ToString & row("Qsign").ToString & row("Asign").ToString, "CHECKED", CompareMethod.Text) <= 0 And row("approve").ToString = "" Then
+            If InStr(row("Rsign").ToString & row("Usign").ToString & row("Lsign").ToString & row("Bsign").ToString & row("Esign").ToString & row("Nsign").ToString & row("Psign").ToString & row("Qsign").ToString & row("Asign").ToString & row("Ssign").ToString, "CHECKED", CompareMethod.Text) <= 0 And row("approve").ToString = "" Then
                 Try
                     Dim fileOpen As Object = downloadFileWinPath(ParameterTable("plant") & "R_PRO_ECR_" & row("DESCRIPTION").ToString, ParameterTable("plant") & "R/" & ParameterTable("plant") & "R_PRO_ECR/")
                     If mailSender("ECR_SignTo", "ECR_SignCopy", "Automatic SrvDoc Message:" & vbCrLf &
@@ -570,14 +405,12 @@ Public Class TimerECR
                                vbCrLf & "Production Note: " & rtfTrans(row("pnote").ToString) & vbCrLf &
                                vbCrLf & "Time & Methods Note: " & rtfTrans(row("qnote").ToString) & vbCrLf &
                                vbCrLf & "Admin Note: " & rtfTrans(row("anote").ToString) & vbCrLf &
+                               vbCrLf & "Environment And Safety Note: " & rtfTrans(row("Snote").ToString) & vbCrLf &
                                vbCrLf & "For all details please download ECR from server SrvDoc. ", "ECR APPROVAL Notification:   " & " " & row("description").ToString, "SS" & row("number").ToString, False, fileOpen) Then
                         Dim sql As String = "UPDATE `" & DBName & "`.`ecr` SET `approve` = '" & "System" & "[" & date_to_string(Now) & "]" & "' WHERE `ecr`.`approve` ='' and `ecr`.`number` = '" & i & "' ;"
                         cmd = New MySqlCommand(sql, MySqlconnection)
                         cmd.ExecuteNonQuery()
-                    Else
-                        'MsgBox("Error sending email ECR approval!")
                     End If
-
                 Catch ex As Exception
                     ComunicationLog("0052") 'db operation error
                 End Try
@@ -592,7 +425,7 @@ Public Class TimerECR
             Dim i As Integer
             i = Int(row("number").ToString)
 
-            If row("sign").ToString = "" And InStr(row("Rsign").ToString & row("Lsign").ToString & row("Usign").ToString & row("Bsign").ToString & row("Esign").ToString & row("Nsign").ToString & row("Psign").ToString & row("Qsign").ToString & row("asign").ToString, "APPROVED", CompareMethod.Text) <= 0 And InStr(row("Rsign").ToString & row("Lsign").ToString & row("Usign").ToString & row("Bsign").ToString & row("Esign").ToString & row("Nsign").ToString & row("Psign").ToString & row("Qsign").ToString & row("asign").ToString, "CHECKED", CompareMethod.Text) <= 0 And readDocSign(Int(row("iddoc").ToString), refresh) = "" Then
+            If row("sign").ToString = "" And InStr(row("Rsign").ToString & row("Usign").ToString & row("Lsign").ToString & row("Bsign").ToString & row("Esign").ToString & row("Nsign").ToString & row("Psign").ToString & row("Qsign").ToString & row("Asign").ToString & row("Ssign").ToString, "APPROVED", CompareMethod.Text) <= 0 And InStr(row("Rsign").ToString & row("Lsign").ToString & row("Usign").ToString & row("Bsign").ToString & row("Esign").ToString & row("Nsign").ToString & row("Psign").ToString & row("Qsign").ToString & row("asign").ToString & row("ssign").ToString, "CHECKED", CompareMethod.Text) <= 0 And readDocSign(Int(row("iddoc").ToString), refresh) = "" Then
                 Try
                     Dim fileOpen As Object = downloadFileWinPath(ParameterTable("plant") & "R_PRO_ECR_" & row("DESCRIPTION").ToString, ParameterTable("plant") & "R/" & ParameterTable("plant") & "R_PRO_ECR/")
                     If mailSender("ECR_SignTo", "ECR_SignCopy", "Automatic SrvDoc Message:" & vbCrLf &
@@ -607,6 +440,7 @@ Public Class TimerECR
                                vbCrLf & "Production Note: " & rtfTrans(row("pnote").ToString) & vbCrLf &
                                vbCrLf & "Time & Methods Note: " & rtfTrans(row("qnote").ToString) & vbCrLf &
                                vbCrLf & "Administration Note: " & rtfTrans(row("anote").ToString) & vbCrLf &
+                               vbCrLf & "Environment And Safety Note: " & rtfTrans(row("snote").ToString) & vbCrLf &
                                vbCrLf & "For all details please download ECR from server SrvDoc. ", "ECR Sign Notification:   " & " " & row("description").ToString, "SS" & row("number").ToString, False, fileOpen) Then
                         Dim sql As String = "UPDATE `" & DBName & "`.`ecr` SET `sign` = '" & "System" & "[" & date_to_string(Now) & "]" & "' WHERE `ecr`.`sign` ='' and `ecr`.`number` = '" & i & "' ;"
                         cmd = New MySqlCommand(sql, MySqlconnection)
@@ -614,8 +448,6 @@ Public Class TimerECR
                         sql = "UPDATE `" & DBName & "`.`doc` SET `sign` = '" & "System" & "[" & date_to_string(Now) & "]" & "' WHERE `doc`.`sign` ='' and `doc`.`id` = '" & row("iddoc").ToString & "' ;"
                         cmd = New MySqlCommand(sql, MySqlconnection)
                         cmd.ExecuteNonQuery()
-                    Else
-                        'MsgBox("Failed email sending for ECR signature!")
                     End If
 
                 Catch ex As Exception
@@ -656,8 +488,6 @@ Public Class TimerECR
         Dim listFile = ""
         tblDoc.Clear()
         DsDoc.Clear()
-        'AdapterDoc As New MySqlDataAdapter("SELECT *, DATEDIFF(CURDATE(),STR_TO_DATE(MID(editor, INSTR(editor,'[') + 1, INSTR(editor,']') - INSTR(editor,'[') - 1), '%d/%m/%Y')) DiffInDays FROM doc ", MySqlconnection)
-
         AdapterDoc.Fill(DsDoc, "doc")
         tblDoc = DsDoc.Tables("doc")
 
@@ -665,7 +495,6 @@ Public Class TimerECR
         Dim RowSearchDoc = From p In tblDoc.Rows
                            Where (p("header") <> (ParameterTable("plant") & "R_PRO_ECR")) And ((p("notification") = "" And p("sign") = "") Or (p("notification") = "SENT" And p("sign") = "" And (DateTime.Now.Date - DateTime.ParseExact(p("editor").Substring(p("editor").IndexOf("[") + 1, p("editor").LastIndexOf("]") - p("editor").IndexOf("[") - 1), "d/M/yyyy", CultureInfo.CurrentCulture).Date).TotalDays > 2))
                            Select p
-        'RowSearchDoc = tblDoc.Select("notification = '' and sign = '' and HEADER <>'" & ParameterTable("plant") & "R_PRO_ECR'")
         For Each row In RowSearchDoc
             listFile = listFile & " " & vbCrLf & row("header").ToString & "_" & row("FileName").ToString & "_" & row("rev").ToString & "." & row("Extension").ToString & " " & vbCrLf
         Next
@@ -719,8 +548,6 @@ Public Class TimerECR
                         sql = "UPDATE `" & DBName & "`.`product` SET `mail` = 'SENT' WHERE `product`.`BitronPN` = '" & row("BITRONPN").ToString & "' ;"
                         cmd = New MySqlCommand(sql, MySqlconnection)
                         cmd.ExecuteNonQuery()
-                    Else
-                        'MsgBox("mail sent error ECR confirm!")
                     End If
 
                 Catch ex As Exception
@@ -732,11 +559,8 @@ Public Class TimerECR
             End If
 
             For Each SS In dep
-
-                'If SS = "E" And row("Status").ToString = "PURCHASING_APPROVED" Then Stop
                 If prevStatus(SS) = row("Status").ToString Or (row("Status").ToString = "MPA_STOPPED" And SS = "N") Then
                     Try
-
                         mailSender("STATUS_" & SS & "_SignTo", "STATUS_" & SS & "_SignCopy", "Automatic SrvDoc Message:" & vbCrLf & vbCrLf &
                                    "Please Update the Status of Product : " & " " & row("bitronpn").ToString & " " & row("name").ToString & vbCrLf &
                                    vbCrLf & "Current Status:  " & row("Status").ToString & vbCrLf &
@@ -747,21 +571,20 @@ Public Class TimerECR
                     End Try
                 End If
             Next
-
         Next
-
     End Sub
 
     Function prevStatus(ByVal dep As String) As String
-        If dep = "L" Then prevStatus = "R&D_APPROVED"
+        If dep = "U" Then prevStatus = "R&D_APPROVED"
+        If dep = "L" Then prevStatus = "PURCHASING_APPROVED"
         If dep = "C" Then prevStatus = "LOGISTIC_APPROVED"
-        If dep = "U" Then prevStatus = "CUSTOMER_APPROVED"
-        If dep = "P" Then prevStatus = "PURCHASING_APPROVED"
+        If dep = "B" Then prevStatus = "CUSTOMER_APPROVED"
+        If dep = "E" Then prevStatus = "PROCESS_ENG_APPROVED"
+        If dep = "P" Then prevStatus = "TESTING_ENG_APPROVED"
         If dep = "Q" Then prevStatus = "PRODUCTION_APPROVED"
-        If dep = "E" Then prevStatus = "TIME&MOTION_APPROVED"
-        If dep = "B" Then prevStatus = "TESTING_ENG_APPROVED"
-        If dep = "F" Then prevStatus = "PROCESS_ENG_APPROVED"
+        If dep = "F" Then prevStatus = "TIME&METHODS_APPROVED"
         If dep = "N" Then prevStatus = "FINANCIAL_APPROVED"
+        If dep = "S" Then prevStatus = "ENVIRONMENT_AND_SAFETY"
     End Function
 
 End Class
