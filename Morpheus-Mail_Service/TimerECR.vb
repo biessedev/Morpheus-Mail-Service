@@ -187,8 +187,7 @@ Public Class TimerECR
                 row("Nsign").ToString <> "NOT CHECKED" And
                 row("Psign").ToString <> "NOT CHECKED" And
                 row("Qsign").ToString <> "NOT CHECKED" And
-                row("Ssign").ToString <> "NOT CHECKED" And
-                DateDiff(DateInterval.Day, Now, dt) < 2 Then
+                row("Ssign").ToString <> "NOT CHECKED" Then
 
                     us = getAllDepartmentInitialsForAutomaticSrvDocMessage()
                     For Each c As String In us
@@ -197,8 +196,7 @@ Public Class TimerECR
                         End If
                     Next
                 End If
-                   If InStr(row("Rsign").ToString & row("Usign").ToString & row("Lsign").ToString & row("Bsign").ToString & row("Esign").ToString & row("Nsign").ToString & row("Psign").ToString & row("Qsign").ToString & row("Asign").ToString & row("Ssign").ToString, "CHECKED", CompareMethod.Text) <= 0 And
-                    DateDiff(DateInterval.Day, Now, dt) < 2 Then
+                If InStr(row("Rsign").ToString & row("Usign").ToString & row("Lsign").ToString & row("Bsign").ToString & row("Esign").ToString & row("Nsign").ToString & row("Psign").ToString & row("Qsign").ToString & row("Asign").ToString & row("Ssign").ToString, "CHECKED", CompareMethod.Text) <= 0 Then
 
                     us = getAllDepartmentInitialsForAutomaticSrvDocMessage()
                     For Each c As String In us
